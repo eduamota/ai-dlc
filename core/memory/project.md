@@ -62,3 +62,15 @@
 
 <!-- Project-specific corrections from human feedback. -->
 <!-- Format: NEVER/ALWAYS [behavior] (learned [date]) -->
+
+## Resolved Ambiguities
+
+<!-- When a recurring ambiguity is resolved through Socratic Discovery or stage questions,
+     record it here. Format:
+     - "<ambiguity pattern>" → "<chosen resolution>" (resolved YYYY-MM-DD)
+
+     The conductor checks this section BEFORE presenting a clarification question.
+     If a matching pattern exists, apply the resolution silently rather than re-asking.
+
+     Research (arXiv 2607.26611, CAPA, July 2026) shows this eliminates repeated
+     clarification cycles across sessions. -->

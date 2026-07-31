@@ -96,6 +96,11 @@ linter doesn't already cover it.
 
 ## Corrections
 
+- When code-generation fails and the subagent retries, do NOT include the full previously-failed
+  code in the retry prompt. Include only the error message, the original plan step, and the
+  constraint violated. Anchoring on previous failures causes reproduction of near-identical
+  broken code 33-68% of the time. (source: arXiv 2607.26117, July 2026)
+
 <!-- Self-learning loop appends here. -->
 <!-- Use team.md to record team-wide additions and project.md for
      project-specific specialisation. The loader resolves org → team →

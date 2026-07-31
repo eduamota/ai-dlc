@@ -1,5 +1,35 @@
 # Code Generation Guide
 
+## Context Loading Expectations
+
+Context files (knowledge, memory, prior artifacts) aid consistency and traceability but
+do NOT substitute for implementation skill. Research (arXiv 2607.27250, July 2026) shows
+context strategy moves correctness by at most 10-15pp. The bottleneck is pattern
+selection and exact wiring.
+
+### When code generation fails, diagnose in this order:
+
+1. **Implementation approach** — Was the right pattern selected? (repository, service,
+   factory, adapter) Check code-generation-patterns.md
+2. **Wiring** — Are dependencies connected correctly? (imports, DI, interface contracts)
+3. **Framework API** — Was the framework/library API used correctly? (check docs)
+4. **Context gap** — Only THEN consider whether missing information caused the failure
+
+### What context IS good for:
+
+- Consistency: naming conventions, file structure, import style
+- Traceability: linking code to requirements and design decisions
+- Guardrails: rules in memory/project.md preventing known mistakes
+- Coordination: ensuring the unit implements the right stories
+
+### What context is NOT good for:
+
+- Fixing incorrect pattern selection (no amount of context fixes a wrong approach)
+- Compensating for framework unfamiliarity (the agent either knows the API or doesn't)
+- Overcoming model skill limitations (the model's training determines capability)
+
+Source: arXiv 2607.27250, "Do Context Files Help Coding Agents?" (July 2026)
+
 ## Implementation Pattern Selection
 
 Choose patterns based on the problem domain:
@@ -40,6 +70,45 @@ For each entity, generate:
 - [ ] Soft delete support if specified in requirements
 - [ ] Migration file for schema changes
 - [ ] Seed data for development/testing if applicable
+
+## Retry Strategy
+
+When a code generation step fails (sensor violation, test failure, type error):
+
+### Strategy by model capability
+
+| Model tier | On failure | Rationale |
+|-----------|-----------|-----------|
+| ≤7B params | Fresh regeneration WITHOUT showing failed output | Anchoring bias (33-68% reproduce identical failures) |
+| >7B params | Include error message + plan step only (NOT failed code) | Larger models benefit from error context but anchor on full code |
+| Any model, 3rd failure | Escalate to human | Structural problem beyond retry |
+
+### What to include in a retry prompt
+
+✅ Include:
+- The original plan step text
+- The error/failure message (exact text)
+- The constraint that was violated (sensor rule, type, test assertion)
+- Project conventions from memory layers
+
+❌ Do NOT include:
+- The full previously-generated code
+- The full file contents that failed
+- Multiple previous failed attempts stacked
+
+### Token efficiency
+
+Blind resampling (fresh attempt) uses 2.5-5.5x fewer tokens than repair-with-feedback
+loops. When cost is a concern, prefer fresh generation over iterative fix cycles.
+
+### Maximum retries
+
+- 3 attempts maximum per plan step before escalating
+- Track retry count in the code-generation-plan.md checkboxes (note attempt number)
+- If the same step fails 3 times, present the failures to the user as a structured
+  question with options: simplify the step, split into sub-steps, or skip with a TODO
+
+Source: arXiv 2607.26117, "Try Again, Don't Look Back" (July 2026)
 
 ## Brownfield Modification Best Practices
 
