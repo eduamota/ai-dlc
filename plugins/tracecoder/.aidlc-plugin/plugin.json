@@ -1,0 +1,15 @@
+{
+  "name": "tracecoder",
+  "version": "0.1.0",
+  "description": "Code provenance layer — TraceCoder-inspired snippet-level audit trail for AI agent code edits. Captures causal chains (trigger, edit, test_result, explanation) via Kiro hooks and verifies provenance records exist for generated code.",
+  "author": { "name": "Eduardo Mota" },
+  "dependencies": ["core"],
+  "aidlc": {
+    "contributes": {
+      "overlays": "contributions/",
+      "knowledge": "knowledge/",
+      "sensors": "sensors/",
+      "tools": "tools/"
+    }
+  }
+}
